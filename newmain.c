@@ -12,22 +12,22 @@
 
 void TCA0_init(void)
 {
-    PORTC.DIR  |= PIN6_bm;
-    PORTC.OUT  |= PIN6_bm;
+    PORTC.DIR  |= PIN6_bm; //definindo porta PC6 como output
+    PORTC.OUT  |= PIN6_bm; //definindo led como apagado no início
     
-    TCA0.SINGLE.INTCTRL = TCA_SINGLE_OVF_bm;
-    TCA0.SINGLE.CTRLB = 0x00;
-    TCA0.SINGLE.PER = 0x4C4A; //INVERTER COM FUNÇÃO DE BAIXO SE DER ERRADO
-    TCA0.SINGLE.EVCTRL = 0x00;
-    TCA0.SINGLE.INTFLAGS = 0x01;
+    TCA0.SINGLE.INTCTRL = TCA_SINGLE_OVF_bm; //permitindo a interrupção de overflow do TCA
+    TCA0.SINGLE.CTRLB = 0x00; //colocando como forma de onda normal 
+    TCA0.SINGLE.PER = 0x4C4A; //definindo o tempo em segundos (5) até a interrupção
+    TCA0.SINGLE.EVCTRL = 0x00; 
+    TCA0.SINGLE.INTFLAGS = 0x01; //limpando a flag de interrupção antes do início da aplicação
     //SREG = 0x80;
-    TCA0.SINGLE.CTRLA = 0x0F;
+    TCA0.SINGLE.CTRLA = 0x0F; //definindo o valor do prescaler e iniciando timer
 }
 
 ISR(TCA0_OVF_vect){
-        PORTC.OUTTGL = 0b01000000;;
+        PORTC.OUTTGL = 0b01000000; //mudando o valor da saída PC6
 
-        TCA0.SINGLE.INTFLAGS = TCA_SINGLE_OVF_bm;
+        TCA0.SINGLE.INTFLAGS = TCA_SINGLE_OVF_bm; //Limpando flag
     }
 
 void main(void) {
